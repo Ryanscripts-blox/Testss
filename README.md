@@ -1,231 +1,159 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Roblox</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            color: white;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .logo {
-            font-size: 48px;
-            font-weight: bold;
-            background: linear-gradient(45deg, #ff8a00, #e52e71);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 10px rgba(229, 46, 113, 0.3);
-            margin-bottom: 20px;
-        }
-        
-        .inject-btn {
-            background: linear-gradient(45deg, #00c6ff, #0072ff);
-            border: none;
-            color: white;
-            padding: 15px 40px;
-            font-size: 18px;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(0, 114, 255, 0.4);
-            font-weight: bold;
-            margin-top: 10px;
-        }
-        
-        .inject-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 114, 255, 0.6);
-        }
-        
-        .inject-btn:active {
-            transform: translateY(1px);
-        }
-        
-        .panel {
-            display: none;
-            background: rgba(26, 26, 46, 0.8);
-            border-radius: 15px;
-            padding: 25px;
-            width: 350px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            margin-top: 30px;
-            animation: fadeIn 0.5s;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .panel-title {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 24px;
-            color: #00c6ff;
-        }
-        
-        .feature {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-            padding: 10px;
-            border-radius: 8px;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-        
-        .feature:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        .feature input {
-            margin-right: 15px;
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-        }
-        
-        .feature label {
-            font-size: 16px;
-            cursor: pointer;
-            flex-grow: 1;
-        }
-        
-        .status {
-            color: #00ff88;
-            font-size: 14px;
-            font-weight: bold;
-            margin-left: 10px;
-        }
-        
-        .footer {
-            margin-top: 30px;
-            text-align: center;
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.5);
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <div class="logo">ROBLOX</div>
-        <button class="inject-btn" id="injectBtn">INJECT</button>
-    </div>
+-- X1X1X1 Hop - Script de Server Hop
+-- Este script permite trocar de servidor rapidamente
+
+local Players = game:GetService("Players")
+local TeleportService = game:GetService("TeleportService")
+local HttpService = game:GetService("HttpService")
+local StarterGui = game:GetService("StarterGui")
+
+local player = Players.LocalPlayer
+local placeId = game.PlaceId
+
+-- Função para mostrar notificação
+local function showNotification(title, text, duration)
+    StarterGui:SetCore("SendNotification", {
+        Title = title;
+        Text = text;
+        Duration = duration or 5;
+    })
+end
+
+-- Função principal de server hop
+local function serverHop()
+    showNotification("X1X1X1 Hop", "Procurando novo servidor...", 3)
     
-    <div class="panel" id="panel">
-        <div class="panel-title">PAINEL ROBLOX</div>
-        
-        <div class="feature">
-            <input type="checkbox" id="antiRecording">
-            <label for="antiRecording">Anti Gravação</label>
-            <span class="status" id="antiRecordingStatus">OFF</span>
-        </div>
-        
-        <div class="feature">
-            <input type="checkbox" id="aimbot">
-            <label for="aimbot">Aimbot</label>
-            <span class="status" id="aimbotStatus">OFF</span>
-        </div>
-        
-        <div class="feature">
-            <input type="checkbox" id="aimlock">
-            <label for="aimlock">Aimlock</label>
-            <span class="status" id="aimlockStatus">OFF</span>
-        </div>
-        
-        <div class="feature">
-            <input type="checkbox" id="aimAssist">
-            <label for="aimAssist">Aim Assist System</label>
-            <span class="status" id="aimAssistStatus">OFF</span>
-        </div>
-        
-        <div class="feature">
-            <input type="checkbox" id="umpTrick">
-            <label for="umpTrick">UMP Trick</label>
-            <span class="status" id="umpTrickStatus">OFF</span>
-        </div>
-        
-        <div class="feature">
-            <input type="checkbox" id="recoil">
-            <label for="recoil">Diminuir Recuo</label>
-            <span class="status" id="recoilStatus">OFF</span>
-        </div>
-        
-        <div class="feature">
-            <input type="checkbox" id="accuracy">
-            <label for="accuracy">Aumentar Precisão</label>
-            <span class="status" id="accuracyStatus">OFF</span>
-        </div>
-        
-        <div class="feature">
-            <input type="checkbox" id="scope">
-            <label for="scope">Scope</label>
-            <span class="status" id="scopeStatus">OFF</span>
-        </div>
-        
-        <div class="footer">
-            Painel Roblox © 2023 - Todos os direitos reservados
-        </div>
-    </div>
+    -- Tentar obter lista de servidores
+    local success, result = pcall(function()
+        local servers = HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/" .. placeId .. "/servers/Public?sortOrder=Asc&limit=100"))
+        return servers
+    end)
     
-    <script>
-        document.getElementById('injectBtn').addEventListener('click', function() {
-            const panel = document.getElementById('panel');
-            const injectBtn = document.getElementById('injectBtn');
+    if success and result and result.data then
+        local servers = result.data
+        local currentJobId = game.JobId
+        
+        -- Filtrar servidores disponíveis (não o atual)
+        local availableServers = {}
+        for _, server in pairs(servers) do
+            if server.id ~= currentJobId and server.playing < server.maxPlayers then
+                table.insert(availableServers, server)
+            end
+        end
+        
+        if #availableServers > 0 then
+            -- Selecionar servidor aleatório
+            local randomServer = availableServers[math.random(1, #availableServers)]
             
-            if (panel.style.display === 'none' || !panel.style.display) {
-                panel.style.display = 'block';
-                injectBtn.textContent = 'INJECTED';
-                injectBtn.style.background = 'linear-gradient(45deg, #00ff88, #00c6ff)';
-                
-                // Simulação de injeção
-                setTimeout(() => {
-                    alert('Painel injetado com sucesso! As funções estão agora disponíveis.');
-                }, 800);
-            } else {
-                panel.style.display = 'none';
-                injectBtn.textContent = 'INJECT';
-                injectBtn.style.background = 'linear-gradient(45deg, #00c6ff, #0072ff)';
-            }
-        });
-        
-        // Atualizar status dos checkboxes
-        document.querySelectorAll('.feature input').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                const statusElement = document.getElementById(this.id + 'Status');
-                statusElement.textContent = this.checked ? 'ON' : 'OFF';
-                statusElement.style.color = this.checked ? '#00ff88' : '#ff4757';
-                
-                // Simular ativação de função
-                if (this.checked) {
-                    console.log(`Função ${this.id} ativada (simulação)`);
-                } else {
-                    console.log(`Função ${this.id} desativada (simulação)`);
-                }
-            });
-        });
-    </script>
-</body>
-</html>
+            showNotification("X1X1X1 Hop", "Conectando ao novo servidor...", 2)
+            
+            -- Teleportar para o novo servidor
+            TeleportService:TeleportToPlaceInstance(placeId, randomServer.id, player)
+        else
+            showNotification("X1X1X1 Hop", "Nenhum servidor disponível encontrado!", 5)
+        end
+    else
+        -- Fallback: teleportar para um servidor aleatório
+        showNotification("X1X1X1 Hop", "Usando método alternativo...", 3)
+        TeleportService:Teleport(placeId, player)
+    end
+end
+
+-- Função para criar GUI
+local function createGUI()
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "X1X1X1HopGUI"
+    screenGui.Parent = player:WaitForChild("PlayerGui")
+    
+    -- Frame principal
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(0, 200, 0, 100)
+    frame.Position = UDim2.new(0, 10, 0, 10)
+    frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    frame.BorderSizePixel = 0
+    frame.Parent = screenGui
+    
+    -- Corner para deixar arredondado
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 8)
+    corner.Parent = frame
+    
+    -- Título
+    local title = Instance.new("TextLabel")
+    title.Size = UDim2.new(1, 0, 0, 30)
+    title.Position = UDim2.new(0, 0, 0, 0)
+    title.BackgroundTransparency = 1
+    title.Text = "X1X1X1 Hop"
+    title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title.TextScaled = true
+    title.Font = Enum.Font.SourceSansBold
+    title.Parent = frame
+    
+    -- Botão de Server Hop
+    local hopButton = Instance.new("TextButton")
+    hopButton.Size = UDim2.new(0.9, 0, 0, 40)
+    hopButton.Position = UDim2.new(0.05, 0, 0, 50)
+    hopButton.BackgroundColor3 = Color3.fromRGB(255, 100, 100)
+    hopButton.BorderSizePixel = 0
+    hopButton.Text = "Server Hop"
+    hopButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    hopButton.TextScaled = true
+    hopButton.Font = Enum.Font.SourceSansBold
+    hopButton.Parent = frame
+    
+    -- Corner do botão
+    local buttonCorner = Instance.new("UICorner")
+    buttonCorner.CornerRadius = UDim.new(0, 6)
+    buttonCorner.Parent = hopButton
+    
+    -- Evento do botão
+    hopButton.MouseButton1Click:Connect(function()
+        serverHop()
+    end)
+    
+    -- Efeito hover
+    hopButton.MouseEnter:Connect(function()
+        hopButton.BackgroundColor3 = Color3.fromRGB(255, 120, 120)
+    end)
+    
+    hopButton.MouseLeave:Connect(function()
+        hopButton.BackgroundColor3 = Color3.fromRGB(255, 100, 100)
+    end)
+    
+    -- Tornar o frame arrastável
+    local dragging = false
+    local dragStart = nil
+    local startPos = nil
+    
+    frame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            dragStart = input.Position
+            startPos = frame.Position
+        end
+    end)
+    
+    frame.InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            local delta = input.Position - dragStart
+            frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        end
+    end)
+    
+    frame.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
+    
+    showNotification("X1X1X1 Hop", "Script carregado com sucesso!", 3)
+end
+
+-- Inicializar o script
+createGUI()
+
+-- Comando de chat para server hop (opcional)
+player.Chatted:Connect(function(message)
+    if message:lower() == "/hop" or message:lower() == "/serverhop" then
+        serverHop()
+    end
+end)
